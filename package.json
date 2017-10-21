@@ -19,11 +19,15 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@shoutem/ui": "^0.21.3",
     "expo": "^21.0.0",
     "react": "16.0.0-alpha.12",
     "react-native": "^0.48.4",
+    "react-native-easy-grid": "^0.1.15",
+    "react-native-elements": "^0.17.0",
     "react-native-highcharts": "^1.0.1",
     "react-native-image-header-scroll-view": "^0.6.1",
+    "react-native-vector-icons": "^4.4.2",
     "react-navigation": "^1.0.0-beta.13",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",

@@ -9,6 +9,7 @@ import {
   } from "react-native";
 import { connect } from 'react-redux';
 import Style from 'style/MainStyle';
+import Comparator from 'component/Comparator';
 
 class Dashboard extends Component {
     static navigationOptions = { header: null };
@@ -24,7 +25,7 @@ class Dashboard extends Component {
     render() {
         return (
             <View style={Style.container}>
-                {this.renderList()}
+                {/* this.renderList() */}
             </View>
         )
     }
