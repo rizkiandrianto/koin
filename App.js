@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import { KeepAwake, Font } from 'expo';
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator, DrawerNavigator, DrawerItems } from 'react-navigation';
 
 import reducer from 'redux/reducer';
 
+import Header from 'component/Header';
 import Main from 'screen/Main';
 import Dashboard from 'screen/Dashboard';
 import Calculator from 'screen/Calculator';
@@ -31,22 +32,13 @@ export default class App extends Component {
     };
   }
   componentWillMount() {
-    // this.polling();
+    this.polling();
   }
   async componentDidMount() {
     await Font.loadAsync({
       'Arial': require('./asset/font/arial.ttf'),
-      'Rubik-Black': require('@shoutem/ui/fonts/Rubik-Black.ttf'),
-      'Rubik-BlackItalic': require('@shoutem/ui/fonts/Rubik-BlackItalic.ttf'),
-      'Rubik-Bold': require('@shoutem/ui/fonts/Rubik-Bold.ttf'),
-      'Rubik-BoldItalic': require('@shoutem/ui/fonts/Rubik-BoldItalic.ttf'),
-      'Rubik-Italic': require('@shoutem/ui/fonts/Rubik-Italic.ttf'),
-      'Rubik-Light': require('@shoutem/ui/fonts/Rubik-Light.ttf'),
-      'Rubik-LightItalic': require('@shoutem/ui/fonts/Rubik-LightItalic.ttf'),
-      'Rubik-Medium': require('@shoutem/ui/fonts/Rubik-Medium.ttf'),
-      'Rubik-MediumItalic': require('@shoutem/ui/fonts/Rubik-MediumItalic.ttf'),
-      'Rubik-Regular': require('@shoutem/ui/fonts/Rubik-Regular.ttf'),
-      'rubicon-icon-font': require('@shoutem/ui/fonts/rubicon-icon-font.ttf'),
+      'Roboto': require('native-base/Fonts/Roboto.ttf'),
+      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
     });
 
     this.setState({ 
@@ -63,7 +55,7 @@ export default class App extends Component {
     GET({
       url: 'ticker',
       query: {
-        limit: 10,
+        limit: 200,
         convert: 'IDR'
       }
     }, (err, res)=>{
@@ -73,7 +65,7 @@ export default class App extends Component {
     });
   }
   render() {
-    const Apps = StackNavigator({
+    const MainNav = StackNavigator({
       Main: {
         screen: Main
       },
@@ -87,12 +79,49 @@ export default class App extends Component {
         screen: Calculator
       }
     }, {
-      initialRouteName: 'Calculator'
+      initialRouteName: 'Main'
     });
+
+    const DrawerNav = DrawerNavigator({
+      "Main Screen": { 
+        screen: Main
+      },
+      "Calculator": { 
+        screen: Calculator
+      },
+      "Header Scroll": { screen: HeaderScroll },
+    }, {
+      contentComponent: props => <ScrollView><DrawerItems {...props} /></ScrollView>,
+      useNativeAnimations: false
+    });
+
+    const DrawerStack = StackNavigator({
+      drawer: {
+        screen: DrawerNav
+      }
+    });
+
+    const Nav = StackNavigator({
+      // loginStack: {
+      //   screen: MainNav
+      // },
+      drawerStack: {
+        screen: DrawerNav,
+        navigationOptions: ({navigation}) => {
+          return {
+            header: <Header navigation={navigation}/>
+          }
+        }
+      }
+    }, {
+      headerMode: 'float',
+      initialRouteName: 'drawerStack'
+    });
+
     if (this.state.fontLoaded) {
       return (
         <Provider store={store}>
-            <Apps />
+            <Nav />
         </Provider>
       );
     }

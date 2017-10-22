@@ -4,13 +4,14 @@
 
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, Text } from 'react-native';
-import { Header } from 'react-native-elements';
+import { Picker, Content, Form, Item as FormItem } from 'native-base';
 import {Grid, Col, Row} from 'react-native-easy-grid';
+import { connect } from 'react-redux';
 import Comparator from 'component/Comparator';
 import Style from 'style/MainStyle';
 import TextInput from 'component/TextInput';
 import MoneyFormater from 'helper/MoneyFormater';
-
+const Item = Picker.Item;
 const style = StyleSheet.create({
     textContainer: {
         flex: 1,
@@ -37,9 +38,23 @@ class Calculator extends Component {
         this.state = {
             buy: 0,
             sell: 0,
-            balance: 0
+            balance: 0,
+            selectedCurrency: undefined,
+            selectedCoin: undefined
         }
         this.changeTextHandler = this.changeTextHandler.bind(this);
+        this.onChangeCoin = this.onChangeCoin.bind(this);
+        this.onChangeCurrency = this.onChangeCurrency.bind(this);
+    }
+    onChangeCoin(value) {
+        this.setState({
+            selectedCoin: value
+        });
+    }
+    onChangeCurrency(value) {
+        this.setState({
+            selectedCurrency: value
+        });
     }
     changeTextHandler(type) {
         return (value) => {
@@ -63,7 +78,7 @@ class Calculator extends Component {
     }
     render() {
         return (
-            <ScrollView style={{backgroundColor: '#fff'}}>
+            <Content style={{backgroundColor: '#fff'}}>
                 <Grid>
                     <Row style={style.textContainer}>
                         <Text style={style.text}>Balance: {MoneyFormater(this.state.balance)}</Text>
@@ -72,6 +87,44 @@ class Calculator extends Component {
                         <Text style={style.text}>Sell: {MoneyFormater(this.state.sell)}</Text>
                         <Text style={style.text}>Jumlah uang yg didapat: {MoneyFormater(this.countFinalBalance())}</Text>
                         <Text style={style.text}>Profit: {MoneyFormater(this.countProfit())}</Text>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Row>
+                                <Text>Select Currency</Text>
+                            </Row>
+                            <Row>
+                                <Picker
+                                    style={{width: 200}}
+                                    mode="dropdown"
+                                    placeholder="Select One"
+                                    selectedValue={this.state.selectedCoin}
+                                    onValueChange={this.onChangeCoin}
+                                >
+                                    <Item label="IDR" value="idr" />
+                                    <Item label="USD" value="usd" />
+                                </Picker>
+                            </Row>
+                        </Col>
+                        <Col>
+                            <Row>
+                                <Text>Select Coin</Text>
+                            </Row>
+                            <Row>
+                                <Picker
+                                    style={{width: 200}}
+                                    mode="dropdown"
+                                    placeholder="Select One"
+                                    selectedValue={this.state.selectedCoin}
+                                    onValueChange={this.onChangeCoin}
+                                >
+                                    <Item label="Bitcoin (BTC)" value="btc" />
+                                    <Item label="Ripple (XRP)" value="xrp" />
+                                    <Item label="ZCoin (XZC)" value="xzc" />
+                                    <Item label="Stellar Lumen (XLM)" value="xlm" />
+                                </Picker>
+                            </Row>
+                        </Col>
                     </Row>
                     <Row style={style.firstRow}>
                         <Col style={{width: '100%', padding: 10, marginBottom: 30}}>
@@ -84,15 +137,22 @@ class Calculator extends Component {
                         </Col>
                     </Row>
                     <Row style={style.rowComparator}>
-                        <Comparator onChange={this.changeTextHandler('buy')}/>
+                        <Comparator onChange={this.changeTextHandler('buy')}
+                            latest={this.state.selectedCoin && this.props.market.find(x => x.symbol == this.state.selectedCoin.toUpperCase()).price_idr}
+                        />
                     </Row>
                     <Row style={style.rowComparator}>
-                        <Comparator onChange={this.changeTextHandler('sell')}/>
+                        <Comparator onChange={this.changeTextHandler('sell')} 
+                            latest={this.state.selectedCoin && this.props.market.find(x => x.symbol == this.state.selectedCoin.toUpperCase()).price_idr}/>
                     </Row>
                 </Grid>
-            </ScrollView>
+            </Content>
         );
     }
 }
 
-export default Calculator;
+export default connect(
+    state => ({
+        market: state.Main.market
+    })
+)(Calculator);

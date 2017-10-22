@@ -3,8 +3,8 @@
 */
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { CheckBox } from 'react-native-elements';
+import { View, StyleSheet } from 'react-native';
+import { CheckBox, ListItem, Body, Text } from 'native-base';
 import Style from 'style/MainStyle';
 import TextInput from 'component/TextInput';
 
@@ -14,11 +14,16 @@ class Comparator extends Component {
         this.state = {
             checked: false,
             value: '',
-            latest: 1290000,
+            latest: props.latest || 0,
             tempValue: ''
         };
         this.checkHandler = this.checkHandler.bind(this);
         this.changeTextHandler = this.changeTextHandler.bind(this);
+    }
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            latest: nextProps.latest
+        });
     }
     changeTextHandler(value) {
         var reg = /^[0-9]+([,.][0-9]+)?$/g;
@@ -52,7 +57,12 @@ class Comparator extends Component {
         return (
             <View style={{width: '100%', padding: 10}}>
                 <TextInput keyboardType="numeric" onChangeText={this.changeTextHandler} style={Style.text} placeholder={'Input desired value'} value={this.state.value}/> 
-                <CheckBox style={{padding: 10}} onPress={this.checkHandler} checked={this.state.checked} title='Use Latest Rate' />
+                <ListItem>
+                    <CheckBox onPress={this.checkHandler} checked={this.state.checked} />
+                    <Body>
+                        <Text>Use Latest Rate</Text>
+                    </Body>
+                </ListItem>
             </View>
         );
     }

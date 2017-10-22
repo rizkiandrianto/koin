@@ -19,12 +19,12 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@shoutem/ui": "^0.21.3",
+    "@expo/vector-icons": "^5.2.0",
     "expo": "^21.0.0",
+    "native-base": "^2.3.3",
     "react": "16.0.0-alpha.12",
     "react-native": "^0.48.4",
     "react-native-easy-grid": "^0.1.15",
-    "react-native-elements": "^0.17.0",
     "react-native-highcharts": "^1.0.1",
     "react-native-image-header-scroll-view": "^0.6.1",
     "react-native-vector-icons": "^4.4.2",

@@ -8,9 +8,10 @@ import Style from 'style/MainStyle';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setIncreaseCounter } from 'redux/action/MainAction';
+import Header from 'component/Header';
 
 class Main extends Component {
-    static navigationOptions = { header: null };
+    static navigationOptions = { header: <Header /> };
     constructor() {
         super();
         this.increase = this.increase.bind(this);
